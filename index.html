@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programmatic Advertising - Interaktywny Przewodnik</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .section {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .calculator {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .calculator h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .calc-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .calc-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .calc-input label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .calc-input input {
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .calc-result {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .ecosystem {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .ecosystem-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ecosystem-item:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .ecosystem-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .rtb-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .rtb-step {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .rtb-step:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .rtb-step::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+
+        .rtb-step:last-child::after {
+            display: none;
+        }
+
+        .auction-simulator {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .bidders {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .bidder {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .bidder.winner {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .quiz {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 12px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .glossary-term {
+            color: #dc3545;
+            cursor: pointer;
+            border-bottom: 1px dotted #dc3545;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .glossary-term-white {
+            color: #ffffff;
+            cursor: pointer;
+            border-bottom: 1px dotted #ffffff;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .tooltip {
+            visibility: hidden;
+            width: 300px;
+            background-color: #212529;
+            color: #ffffff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid #495057;
+        }
+
+        .glossary-term:hover .tooltip,
+        .glossary-term-white:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Link styles for better contrast */
+        a {
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: #a71e2a !important;
+            text-decoration: underline !important;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .rtb-flow { flex-direction: column; }
+            .rtb-step::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Programmatic Advertising</h1>
+            <p>Interaktywny przewodnik po świecie automatyzacji reklamy cyfrowej</p>
+        </div>
+
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection('podstawy')">Podstawy</button>
+            <button class="nav-btn" onclick="showSection('wskazniki')">Wskaźniki</button>
+            <button class="nav-btn" onclick="showSection('ekosystem')">Ekosystem</button>
+            <button class="nav-btn" onclick="showSection('rtb')">RTB Process</button>
+            <button class="nav-btn" onclick="showSection('symulator')">Symulator</button>
+            <button class="nav-btn" onclick="showSection('quiz')">Quiz</button>
+            <button class="nav-btn" onclick="showSection('zasoby')">Zasoby</button>
+        </div>
+
+        <div id="podstawy" class="section active">
+            <h2>🎯 Podstawy Programmatic Advertising</h2>
+            
+            <p>Programmatic advertising to automatyzacja procesów kupna i sprzedaży przestrzeni reklamowej w czasie rzeczywistym. Kluczowe pojęcia:</p>
+
+            <div class="ecosystem">
+                <div class="ecosystem-item">
+                    <h4>DSP</h4>
+                    <p><span class="glossary-term-white">Demand-Side Platform<span class="tooltip">Platforma po stronie popytu - narzędzie dla reklamodawców do kupowania przestrzeni reklamowej</span></span></p>
+                </div>
+                <div class="ecosystem-item">
+                    <h4>SSP</h4>
+                    <p><span class="glossary-term-white">Supply-Side Platform<span class="tooltip">Platforma po stronie podaży - narzędzie dla wydawców do sprzedaży przestrzeni reklamowej</span></span></p>
+                </div>
+                <div class="ecosystem-item">
+                    <h4>DMP</h4>
+                    <p><span class="glossary-term-white">Data Management Platform<span class="tooltip">Platforma zarządzania danymi - zbiera i analizuje dane o użytkownikach</span></span></p>
+                </div>
+                <div class="ecosystem-item">
+                    <h4>Ad Exchange</h4>
+                    <p><span class="glossary-term-white">Giełda reklamowa<span class="tooltip">Marketplace gdzie kupcy i sprzedawcy spotykają się aby handlować przestrzenią reklamową</span></span></p>
+                </div>
+            </div>
+
+            <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3>💡 Dlaczego Programmatic?</h3>
+                <ul style="margin-left: 20px; line-height: 1.6;">
+                    <li><strong>Efektywność:</strong> Automatyzacja eliminuje manualną pracę</li>
+                    <li><strong>Precyzja:</strong> Dokładne targetowanie na podstawie danych</li>
+                    <li><strong>Skala:</strong> Dostęp do milionów miejsc reklamowych</li>
+                    <li><strong>Optymalizacja:</strong> Real-time dostosowanie kampanii</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="wskazniki" class="section">
+            <h2>📈 Kalkulatory Wskaźników</h2>
+
+            <div class="calculator">
+                <h3>💰 CPM (Cost Per Mille)</h3>
+                <div class="calc-group">
+                    <div class="calc-input">
+                        <label>Koszt kampanii (PLN):</label>
+                        <input type="number" id="cpm-cost" placeholder="1000" oninput="calculateCPM()">
+                    </div>
+                    <div class="calc-input">
+                        <label>Wyświetlenia:</label>
+                        <input type="number" id="cpm-impressions" placeholder="100000" oninput="calculateCPM()">
+                    </div>
+                </div>
+                <div class="calc-result" id="cpm-result">CPM: 0.00 PLN</div>
+            </div>
+
+            <div class="calculator">
+                <h3>🖱️ CPC (Cost Per Click)</h3>
+                <div class="calc-group">
+                    <div class="calc-input">
+                        <label>Koszt kampanii (PLN):</label>
+                        <input type="number" id="cpc-cost" placeholder="1000" oninput="calculateCPC()">
+                    </div>
+                    <div class="calc-input">
+                        <label>Liczba kliknięć:</label>
+                        <input type="number" id="cpc-clicks" placeholder="500" oninput="calculateCPC()">
+                    </div>
+                </div>
+                <div class="calc-result" id="cpc-result">CPC: 0.00 PLN</div>
+            </div>
+
+            <div class="calculator">
+                <h3>🎯 CTR (Click-Through Rate)</h3>
+                <div class="calc-group">
+                    <div class="calc-input">
+                        <label>Kliknięcia:</label>
+                        <input type="number" id="ctr-clicks" placeholder="500" oninput="calculateCTR()">
+                    </div>
+                    <div class="calc-input">
+                        <label>Wyświetlenia:</label>
+                        <input type="number" id="ctr-impressions" placeholder="100000" oninput="calculateCTR()">
+                    </div>
+                </div>
+                <div class="calc-result" id="ctr-result">CTR: 0.00%</div>
+            </div>
+
+            <div class="calculator">
+                <h3>💎 ROAS (Return on Ad Spend)</h3>
+                <div class="calc-group">
+                    <div class="calc-input">
+                        <label>Przychód (PLN):</label>
+                        <input type="number" id="roas-revenue" placeholder="5000" oninput="calculateROAS()">
+                    </div>
+                    <div class="calc-input">
+                        <label>Koszt reklam (PLN):</label>
+                        <input type="number" id="roas-cost" placeholder="1000" oninput="calculateROAS()">
+                    </div>
+                </div>
+                <div class="calc-result" id="roas-result">ROAS: 0.00x</div>
+            </div>
+        </div>
+
+        <div id="ekosystem" class="section">
+            <h2>🌐 Ekosystem Programmatic</h2>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <svg width="100%" height="400" viewBox="0 0 800 400">
+                    <!-- Advertiser -->
+                    <rect x="50" y="50" width="120" height="80" fill="#667eea" rx="10"/>
+                    <text x="110" y="85" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Reklamodawca</text>
+                    <text x="110" y="105" text-anchor="middle" fill="white" font-size="10">(Advertiser)</text>
+
+                    <!-- DSP -->
+                    <rect x="250" y="50" width="120" height="80" fill="#764ba2" rx="10"/>
+                    <text x="310" y="85" text-anchor="middle" fill="white" font-size="12" font-weight="bold">DSP</text>
+                    <text x="310" y="105" text-anchor="middle" fill="white" font-size="10">Demand-Side Platform</text>
+
+                    <!-- Ad Exchange -->
+                    <rect x="325" y="200" width="150" height="100" fill="#28a745" rx="10"/>
+                    <text x="400" y="235" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Ad Exchange</text>
+                    <text x="400" y="255" text-anchor="middle" fill="white" font-size="10">Giełda Reklamowa</text>
+                    <text x="400" y="275" text-anchor="middle" fill="white" font-size="10">RTB Auction</text>
+
+                    <!-- SSP -->
+                    <rect x="550" y="50" width="120" height="80" fill="#dc3545" rx="10"/>
+                    <text x="610" y="85" text-anchor="middle" fill="white" font-size="12" font-weight="bold">SSP</text>
+                    <text x="610" y="105" text-anchor="middle" fill="white" font-size="10">Supply-Side Platform</text>
+
+                    <!-- Publisher -->
+                    <rect x="630" y="270" width="120" height="80" fill="#fd7e14" rx="10"/>
+                    <text x="690" y="305" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Wydawca</text>
+                    <text x="690" y="325" text-anchor="middle" fill="white" font-size="10">(Publisher)</text>
+
+                    <!-- DMP -->
+                    <rect x="50" y="270" width="120" height="80" fill="#6f42c1" rx="10"/>
+                    <text x="110" y="305" text-anchor="middle" fill="white" font-size="12" font-weight="bold">DMP</text>
+                    <text x="110" y="325" text-anchor="middle" fill="white" font-size="10">Data Management</text>
+
+                    <!-- Arrows -->
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                         refX="0" refY="3.5" orient="auto">
+                          <polygon points="0 0, 10 3.5, 0 7" fill="#212529" />
+                        </marker>
+                    </defs>
+
+                    <!-- Connections -->
+                    <line x1="170" y1="90" x2="250" y2="90" stroke="#212529" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="310" y1="130" x2="380" y2="200" stroke="#212529" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="420" y1="200" x2="610" y2="130" stroke="#212529" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="610" y1="130" x2="690" y2="270" stroke="#212529" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    <line x1="170" y1="310" x2="325" y2="250" stroke="#212529" stroke-width="3" marker-end="url(#arrowhead)"/>
+
+                    <!-- Labels -->
+                    <text x="210" y="85" text-anchor="middle" fill="#212529" font-size="11" font-weight="bold">$</text>
+                    <text x="340" y="170" text-anchor="middle" fill="#212529" font-size="11" font-weight="bold">bid</text>
+                    <text x="500" y="170" text-anchor="middle" fill="#212529" font-size="11" font-weight="bold">win</text>
+                    <text x="650" y="210" text-anchor="middle" fill="#212529" font-size="11" font-weight="bold">ad space</text>
+                    <text x="240" y="280" text-anchor="middle" fill="#212529" font-size="11" font-weight="bold">data</text>
+                </svg>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3>🔄 Przepływ danych i pieniędzy:</h3>
+                <ol style="margin-left: 20px; line-height: 1.8;">
+                    <li><strong>Reklamodawca</strong> ustawia kampanię w DSP z budżetem i targetingiem</li>
+                    <li><strong>DMP</strong> dostarcza dane o użytkownikach do lepszego targetowania</li>
+                    <li><strong>DSP</strong> składa oferty w aukcjach na Ad Exchange</li>
+                    <li><strong>Ad Exchange</strong> przeprowadza aukcję RTB w czasie rzeczywistym</li>
+                    <li><strong>SSP</strong> reprezentuje wydawców i optymalizuje przychody</li>
+                    <li><strong>Wydawca</strong> otrzymuje płatność za wyświetlenie reklamy</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="rtb" class="section">
+            <h2>⚡ Proces RTB (Real-Time Bidding)</h2>
+            
+            <p>Cały proces aukcji RTB trwa około <strong>100 milisekund</strong> - mniej niż mrugnięcie oka!</p>
+
+            <div class="rtb-flow">
+                <div class="rtb-step">
+                    <h4>1</h4>
+                    <p>Użytkownik wchodzi na stronę</p>
+                </div>
+                <div class="rtb-step">
+                    <h4>2</h4>
+                    <p>SSP wysyła bid request</p>
+                </div>
+                <div class="rtb-step">
+                    <h4>3</h4>
+                    <p>DSP analizuje profil użytkownika</p>
+                </div>
+                <div class="rtb-step">
+                    <h4>4</h4>
+                    <p>DSP składa ofertę</p>
+                </div>
+                <div class="rtb-step">
+                    <h4>5</h4>
+                    <p>Aukcja wybiera zwycięzcę</p>
+                </div>
+                <div class="rtb-step">
+                    <h4>6</h4>
+                    <p>Reklama wyświetla się użytkownikowi</p>
+                </div>
+            </div>
+
+            <button class="btn" onclick="animateRTB()">🎬 Pokaż animację RTB</button>
+
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #ffc107;">
+                <h3>⏱️ Timing jest kluczowy:</h3>
+                <ul style="margin-left: 20px; line-height: 1.6;">
+                    <li><strong>10ms</strong> - Czas na analizę użytkownika przez DMP</li>
+                    <li><strong>50ms</strong> - Czas na podjęcie decyzji przez DSP</li>
+                    <li><strong>30ms</strong> - Czas na aukcję i wybór zwycięzcy</li>
+                    <li><strong>10ms</strong> - Buffer na opóźnienia sieciowe</li>
+                    <li><strong>=100ms</strong> - Całkowity czas procesu RTB</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="symulator" class="section">
+            <h2>🎰 Symulator Aukcji RTB</h2>
+            
+            <div class="auction-simulator">
+                <h3>Ustaw parametry aukcji:</h3>
+                <div class="calc-group">
+                    <div class="calc-input">
+                        <label>Floor Price (PLN):</label>
+                        <input type="number" id="floor-price" value="0.50" step="0.10">
+                    </div>
+                    <div class="calc-input">
+                        <label>Liczba bidderów:</label>
+                        <input type="number" id="bidder-count" value="5" min="2" max="10">
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="runAuction()">🚀 Uruchom aukcję!</button>
+                
+                <div id="auction-results">
+                    <h4>Bidderzy:</h4>
+                    <div class="bidders" id="bidders-container">
+                        <!-- Bidders will be generated here -->
+                    </div>
+                    
+                    <div id="auction-winner" style="text-align: center; margin-top: 20px; font-size: 1.2rem; font-weight: bold;"></div>
+                </div>
+            </div>
+
+            <div style="background: #d1ecf1; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 5px solid #17a2b8;">
+                <h3>📋 Jak działa aukcja Second Price:</h3>
+                <p>W aukcji Second Price zwycięzca płaci cenę drugiej najwyższej oferty + 0.01 PLN. To zapobiega manipulacjom i zachęca do składania uczciwych ofert.</p>
+            </div>
+        </div>
+
+        <div id="quiz" class="section">
+            <h2>🧠 Test wiedzy</h2>
+            
+            <div class="quiz" id="quiz-container">
+                <div class="quiz-question" id="quiz-question">Pytanie zostanie załadowane...</div>
+                <div class="quiz-options" id="quiz-options">
+                    <!-- Options will be generated here -->
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="nextQuestion()">Następne pytanie ➡️</button>
+                    <div id="quiz-score" style="margin-top: 10px; font-weight: bold;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="zasoby" class="section">
+            <h2>📚 Zasoby i Specyfikacje</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h3>🔗 Oficjalne Specyfikacje</h3>
+                    <ul style="line-height: 1.8;">
+                        <li><a href="https://www.iab.com/guidelines/real-time-bidding-rtb-project/" target="_blank" style="color: #dc3545; font-weight: 500; text-decoration: none;">IAB OpenRTB Specification</a></li>
+                        <li><a href="https://www.iab.com/guidelines/programmatic/" target="_blank" style="color: #dc3545; font-weight: 500; text-decoration: none;">IAB Programmatic Guidelines</a></li>
+                        <li><a href="https://www.iab.com/guidelines/iab-tech-lab-ads-txt/" target="_blank" style="color: #dc3545; font-weight: 500; text-decoration: none;">Ads.txt Standard</a></li>
+                        <li><a href="https://iabtechlab.com/sellers-json/" target="_blank" style="color: #dc3545; font-weight: 500; text-decoration: none;">Sellers.json</a></li>
+                    </ul>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h3>📖 Słownik Pojęć</h3>
+                    <ul style="line-height: 1.8;">
+                        <li><strong>Viewability:</strong> Wskaźnik pokazujący ile % reklam było rzeczywiście widocznych</li>
+                        <li><strong>Attribution:</strong> Model przypisywania konwersji do różnych punktów styku</li>
+                        <li><strong>Frequency Capping:</strong> Ograniczenie częstotliwości wyświetleń</li>
+                        <li><strong>Lookalike Audience:</strong> Grupa podobna do istniejących klientów</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h3>🛠️ Narzędzia i Platformy</h3>
+                    <ul style="line-height: 1.8;">
+                        <li><strong>Google DV360:</strong> Enterprise DSP od Google</li>
+                        <li><strong>The Trade Desk:</strong> Jedna z największych niezależnych DSP</li>
+                        <li><strong>Amazon DSP:</strong> Platforma Amazon Advertising</li>
+                        <li><strong>Adobe DSP:</strong> Część Adobe Advertising Cloud</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h3>📊 Benchmarki Branżowe</h3>
+                    <ul style="line-height: 1.8;">
+                        <li><strong>CTR Display:</strong> 0.05% - 0.1%</li>
+                        <li><strong>CTR Video:</strong> 0.15% - 0.3%</li>
+                        <li><strong>Viewability:</strong> >70% (MRC standard)</li>
+                        <li><strong>Brand Safety:</strong> >95% safe content</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; color: white;">
+                <h3>🎓 Gotowy na praktykę?</h3>
+                <p>Ten przewodnik dał Ci podstawy. Teraz czas na eksperymenty z prawdziwymi platformami!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Calculators
+        function calculateCPM() {
+            const cost = parseFloat(document.getElementById('cpm-cost').value) || 0;
+            const impressions = parseFloat(document.getElementById('cpm-impressions').value) || 0;
+            const cpm = impressions > 0 ? (cost / impressions * 1000) : 0;
+            document.getElementById('cpm-result').textContent = `CPM: ${cpm.toFixed(2)} PLN`;
+        }
+
+        function calculateCPC() {
+            const cost = parseFloat(document.getElementById('cpc-cost').value) || 0;
+            const clicks = parseFloat(document.getElementById('cpc-clicks').value) || 0;
+            const cpc = clicks > 0 ? (cost / clicks) : 0;
+            document.getElementById('cpc-result').textContent = `CPC: ${cpc.toFixed(2)} PLN`;
+        }
+
+        function calculateCTR() {
+            const clicks = parseFloat(document.getElementById('ctr-clicks').value) || 0;
+            const impressions = parseFloat(document.getElementById('ctr-impressions').value) || 0;
+            const ctr = impressions > 0 ? (clicks / impressions * 100) : 0;
+            document.getElementById('ctr-result').textContent = `CTR: ${ctr.toFixed(2)}%`;
+        }
+
+        function calculateROAS() {
+            const revenue = parseFloat(document.getElementById('roas-revenue').value) || 0;
+            const cost = parseFloat(document.getElementById('roas-cost').value) || 0;
+            const roas = cost > 0 ? (revenue / cost) : 0;
+            document.getElementById('roas-result').textContent = `ROAS: ${roas.toFixed(2)}x`;
+        }
+
+        // RTB Animation
+        function animateRTB() {
+            const steps = document.querySelectorAll('.rtb-step');
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    step.style.background = '#28a745';
+                    step.style.color = 'white';
+                    step.style.transform = 'scale(1.1)';
+                    
+                    setTimeout(() => {
+                        step.style.background = '#f8f9fa';
+                        step.style.color = '#333';
+                        step.style.transform = 'scale(1)';
+                    }, 500);
+                }, index * 200);
+            });
+        }
+
+        // Auction Simulator
+        function runAuction() {
+            const floorPrice = parseFloat(document.getElementById('floor-price').value);
+            const bidderCount = parseInt(document.getElementById('bidder-count').value);
+            const biddersContainer = document.getElementById('bidders-container');
+            const winnerDiv = document.getElementById('auction-winner');
+            
+            biddersContainer.innerHTML = '';
+            
+            const bidders = [];
+            for (let i = 1; i <= bidderCount; i++) {
+                const bid = Math.random() * (floorPrice * 3) + floorPrice * 0.5;
+                bidders.push({
+                    id: i,
+                    bid: bid,
+                    name: `DSP ${i}`
+                });
+            }
+            
+            bidders.sort((a, b) => b.bid - a.bid);
+            const winner = bidders[0];
+            const secondPrice = bidders.length > 1 ? bidders[1].bid + 0.01 : floorPrice;
+            
+            bidders.forEach((bidder, index) => {
+                const bidderDiv = document.createElement('div');
+                bidderDiv.className = 'bidder';
+                if (index === 0) {
+                    bidderDiv.classList.add('winner');
+                }
+                
+                bidderDiv.innerHTML = `
+                    <h4>${bidder.name}</h4>
+                    <p>Oferta: ${bidder.bid.toFixed(2)} PLN</p>
+                    ${index === 0 ? '<p><strong>🏆 ZWYCIĘZCA!</strong></p>' : ''}
+                `;
+                
+                biddersContainer.appendChild(bidderDiv);
+            });
+            
+            winnerDiv.innerHTML = `
+                <p style="color: #28a745;">🏆 Zwycięzca: ${winner.name}</p>
+                <p>Płaci: ${secondPrice.toFixed(2)} PLN (Second Price Auction)</p>
+                <p>Oszczędność: ${(winner.bid - secondPrice).toFixed(2)} PLN</p>
+            `;
+        }
+
+        // Quiz
+        const quizQuestions = [
+            {
+                question: "Co oznacza skrót RTB?",
+                options: ["Real-Time Bidding", "Real-Time Broadcasting", "Ready-To-Buy", "Return-To-Base"],
+                correct: 0
+            },
+            {
+                question: "Ile czasu trwa przeciętna aukcja RTB?",
+                options: ["1 sekunda", "100 milisekund", "10 sekund", "1 minuta"],
+                correct: 1
+            },
+            {
+                question: "Co to jest CPM?",
+                options: ["Cost Per Month", "Cost Per Mille", "Cost Per Message", "Cost Per Minute"],
+                correct: 1
+            },
+            {
+                question: "Która platforma reprezentuje reklamodawców?",
+                options: ["SSP", "DMP", "DSP", "CMP"],
+                correct: 2
+            },
+            {
+                question: "Co to jest Second Price Auction?",
+                options: [
+                    "Zwycięzca płaci swoją ofertę",
+                    "Zwycięzca płaci drugą najwyższą ofertę + 0.01",
+                    "Wszyscy płacą tyle samo",
+                    "Nikt nie płaci"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const question = quizQuestions[currentQuestion];
+            document.getElementById('quiz-question').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            updateScore();
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = quizQuestions[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options.forEach((option, index) => {
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && index !== question.correct) {
+                    option.classList.add('incorrect');
+                }
+                option.onclick = null; // Disable further clicks
+            });
+            
+            if (selectedIndex === question.correct) {
+                score++;
+            }
+            
+            updateScore();
+        }
+
+        function nextQuestion() {
+            currentQuestion = (currentQuestion + 1) % quizQuestions.length;
+            loadQuestion();
+        }
+
+        function updateScore() {
+            document.getElementById('quiz-score').textContent = `Wynik: ${score}/${currentQuestion + 1}`;
+        }
+
+        // Initialize
+        loadQuestion();
+        
+        // Auto-calculate examples
+        document.getElementById('cpm-cost').value = '1000';
+        document.getElementById('cpm-impressions').value = '100000';
+        calculateCPM();
+        
+        document.getElementById('cpc-cost').value = '1000';
+        document.getElementById('cpc-clicks').value = '500';
+        calculateCPC();
+        
+        document.getElementById('ctr-clicks').value = '500';
+        document.getElementById('ctr-impressions').value = '100000';
+        calculateCTR();
+        
+        document.getElementById('roas-revenue').value = '5000';
+        document.getElementById('roas-cost').value = '1000';
+        calculateROAS();
+    </script>
+</body>
+</html>

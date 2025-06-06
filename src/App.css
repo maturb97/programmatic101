@@ -1,3 +1,18 @@
+* {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+.progress-step {
+  min-width: 160px !important;
+}
+
+.step-title {
+  max-width: 140px !important;
+  line-height: 1.4 !important;
+}
+
+
 /* CSS Custom Properties */
 :root {
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

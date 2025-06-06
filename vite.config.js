@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/programmatic101/',
+  base: '/programmatic101/', // MUSI być dokładnie nazwa repo
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

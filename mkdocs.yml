@@ -1,0 +1,33 @@
+site_name: Programmatic 101
+site_description: Kompletna baza wiedzy o DSP
+site_author: The Garneck, Inc.
+
+theme:
+  name: material
+  language: pl
+  palette:
+    primary: green
+  feature:
+    tabs: true
+
+plugins:
+  - search
+  - static_i18n:
+      default_language: pl
+      languages:
+        en: English
+        pl: Polski
+  - mermaid2
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Moduły:
+      - 1. Wprowadzenie: 01-intro.md
+      - 2. Architektura RTB: 02-rtb-architecture.md
+      - 3. Kluczowe pojęcia: 03-key-concepts.md
+  - Słownik: glossary/index.md

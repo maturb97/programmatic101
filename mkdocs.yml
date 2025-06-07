@@ -19,7 +19,7 @@ theme:
 
 plugins:
   - search
-  - static_i18n:
+  - i18n:
       default_language: pl
       languages:
         pl: Polski

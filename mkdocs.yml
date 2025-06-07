@@ -19,11 +19,11 @@ theme:
 
 plugins:
   - search
-  - i18n:
+  - static_i18n:
       default_language: pl
       languages:
-        pl: Polski
-        en: English
+        - pl
+        - en
   - mermaid2
   - quiz
 

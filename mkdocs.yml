@@ -1,23 +1,31 @@
 site_name: Programmatic 101
-site_description: Kompletna baza wiedzy o DSP
-site_author: The Garneck, Inc.
+site_description: Kompletna baza wiedzy o Programmatic
+site_author: Mati Urbanek LLC
+site_url: https://maturb97.github.io/programmatic101/
+repo_url: https://github.com/maturb97/programmatic101
 
 theme:
   name: material
   language: pl
   palette:
     primary: green
-  feature:
-    tabs: true
+    accent: green
+    toggle:
+      icon: material/weather-night
+      name: Przełącz na ciemny motyw
+  features:
+    - navigation.tabs
+    - navigation.top
 
 plugins:
   - search
   - static_i18n:
       default_language: pl
       languages:
-        en: English
         pl: Polski
+        en: English
   - mermaid2
+  - quiz
 
 markdown_extensions:
   - admonition
@@ -27,7 +35,16 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Moduły:
-      - 1. Wprowadzenie: 01-intro.md
-      - 2. Architektura RTB: 02-rtb-architecture.md
-      - 3. Kluczowe pojęcia: 03-key-concepts.md
+      - 1. Wprowadzenie: 1-intro.md
+      - 2. Architektura RTB: 2-rtb-architecture.md
+      - 3. Kluczowe pojęcia: 3-key-concepts.md
   - Słownik: glossary/index.md
+  - Mixed Quiz: mixed-quiz.md
+  - Case in a Minute: case-in-a-minute.md
+  - Journal: journal.md
+
+extra_javascript:
+  - assets/js/extra.js
+
+extra_css:
+  - assets/css/extra.css
